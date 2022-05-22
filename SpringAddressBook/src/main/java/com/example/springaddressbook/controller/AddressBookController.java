@@ -1,53 +1,51 @@
 package com.example.springaddressbook.controller;
 
+import com.example.springaddressbook.dto.AddressBookDTO;
+import com.example.springaddressbook.dto.ResponseDTO;
 import com.example.springaddressbook.model.AddressBook;
-import com.example.springaddressbook.repository.AddressBookRepository;
-import com.example.springaddressbook.service.AddressBookService;
+import com.example.springaddressbook.service.IAddressBookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+    @RestController
+    @RequestMapping("/address")
+    public class AddressBookController {
+        @Autowired
+        IAddressBookService iAddressBookService;
 
-import java.util.List;
-import java.util.Optional;
-
-@RestController
-@RequestMapping("/address")
-public class AddressBookController {
-    @Autowired
-    AddressBookService addressBookService;
-    @Autowired
-    AddressBookRepository addressBookRepository;
-
-    @GetMapping("/show/{id}")
-    public Optional<AddressBook> getAddressById (@PathVariable int id){
-        Optional<AddressBook> response = addressBookService.getDataById(id);
-        return response;
-    }
-
-    @GetMapping("/showall")
-    public List<AddressBook> allAddressBookData (){
-        List<AddressBook> response = addressBookService.getAllData();
-        return response;
-    }
-
-    @PostMapping("/add")
-    public AddressBook addAddress (@RequestBody AddressBook addressBook){
-        AddressBook newAddress = addressBookService.addData(addressBook);
-        return newAddress;
-    }
-
-    @PutMapping("/edit/{id}")
-    public AddressBook editContact(@PathVariable int id, @RequestBody AddressBook addressBook){
-        AddressBook editAddress = addressBookService.editData(id,addressBook);
-        return editAddress;
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
-        Optional<AddressBook> newuser =addressBookRepository.findById(id);
-        if (newuser.isPresent()){
-            addressBookRepository.delete(newuser.get());
-            return "Record is deleted with id " +id;
+        @PostMapping("/add")
+        public ResponseEntity<ResponseDTO> addAddressBook(@RequestBody AddressBookDTO addressBookDTO) {
+            AddressBook newAddressBook = new AddressBook(addressBookDTO);
+            ResponseDTO responseDTO = new ResponseDTO("Adding the data", iAddressBookService.addAddressBook(newAddressBook));
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         }
-        return "Record not Found";
+
+        @GetMapping("/search/{id}")
+        public ResponseEntity<ResponseDTO> getById(@PathVariable int id) {
+            ResponseDTO responseDTO = new ResponseDTO("searched id", iAddressBookService.getById(id));
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        }
+
+        @GetMapping("/show")
+        public ResponseEntity<ResponseDTO> getAll() {
+            ResponseDTO responseDTO = new ResponseDTO("Show the data", iAddressBookService.getAll());
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }
+
+        @PutMapping("/edit/{id}")
+        public ResponseEntity<ResponseDTO> editData(@PathVariable int id, @RequestBody AddressBookDTO addressBookDTO) {
+            ResponseDTO responseDTO = new ResponseDTO("Edit the data", iAddressBookService.editData(id, addressBookDTO));
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }
+
+        @DeleteMapping("/remove/{id}")
+        public ResponseEntity<ResponseDTO> removeById(@PathVariable int id) {
+            ResponseDTO responseDTO = new ResponseDTO("Remove the data", iAddressBookService.removeById(id));
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }
     }
-}
+
+
+
+

@@ -1,7 +1,8 @@
 package com.example.springaddressbook.service;
 
+import com.example.springaddressbook.dto.AddressBookDTO;
 import com.example.springaddressbook.model.AddressBook;
-import com.example.springaddressbook.repository.AddressBookRepository;
+import com.example.springaddressbook.repository.IAddressBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,30 +10,37 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AddressBookService {
+public class AddressBookService implements IAddressBookService{
     @Autowired
-    AddressBookRepository addressBookRepository;
+    IAddressBookRepository iAddressBookRepository;
 
-    public List<AddressBook> getAllData() {
-        return addressBookRepository.findAll();
+    public AddressBook addAddressBook(AddressBook addressBook) {
+        AddressBook newAddressBook = new AddressBook(addressBook);
+        iAddressBookRepository.save(newAddressBook);
+        return newAddressBook;
+
     }
 
-    public Optional<AddressBook> getDataById(int id) {
-        return addressBookRepository.findById(id);
+    public Optional<AddressBook> getById(int id) {
+        return iAddressBookRepository.findById(id);
     }
 
-    public AddressBook editData(int id, AddressBook addressBook) {
-        AddressBook search = null;
-        if (addressBookRepository.findById(id).isPresent()) {
-            AddressBook newAddress = new AddressBook(id, addressBook);
-            search = addressBookRepository.save(newAddress);
+    public List<AddressBook> getAll() {
+        return iAddressBookRepository.findAll();
+    }
+
+    @Override
+    public AddressBook editData(int id, AddressBookDTO addressBookDTO) {
+        AddressBook edituser = new AddressBook(id, addressBookDTO);
+        iAddressBookRepository.save(edituser);
+        return edituser;
+    }
+    public String removeById(int id) {
+        Optional<AddressBook> newAddressBook = iAddressBookRepository.findById(id);
+        if (newAddressBook.isPresent()) {
+            iAddressBookRepository.delete(newAddressBook.get());
+            return "Record is deleted with id " + id;
         }
-        return search;
-    }
-
-    public AddressBook addData(AddressBook addressBook) {
-        AddressBook addToAddressBook = new AddressBook(addressBook);
-        addressBookRepository.save(addToAddressBook);
-        return addToAddressBook;
+        return "Record not Found";
     }
 }

@@ -1,5 +1,7 @@
 package com.example.springaddressbook.model;
 
+import com.example.springaddressbook.dto.AddressBookDTO;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,14 +10,14 @@ import javax.persistence.Id;
 public class AddressBook {
     @Id
     @GeneratedValue
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String city;
-    private long zip;
-    private String email;
-    private long contact;
+    public int id;
+    public String firstName;
+    public String lastName;
+    public String address;
+    public String city;
+    public long zip;
+    public String email;
+    public long contact;
 
     public AddressBook(int id, AddressBook addressBook) {
         this.firstName = addressBook.firstName;
@@ -28,7 +30,6 @@ public class AddressBook {
     }
 
     public AddressBook(AddressBook addressBook) {
-        this.id = addressBook.id;
         this.firstName = addressBook.firstName;
         this.lastName = addressBook.lastName;
         this.address = addressBook.address;
@@ -40,6 +41,37 @@ public class AddressBook {
 
     public AddressBook() {
 
+    }
+
+    public AddressBook(int id, AddressBookDTO addressBookDTO) {
+        this.id = id;
+        this.firstName = addressBookDTO.firstName;
+        this.lastName = addressBookDTO.lastName;
+        this.address = addressBookDTO.address;
+        this.city = addressBookDTO.city;
+        this.zip = addressBookDTO.zip;
+        this.email = addressBookDTO.email;
+        this.contact = addressBookDTO.contact;
+    }
+
+    public AddressBook(AddressBookDTO addressBookDTO) {
+        this.firstName = addressBookDTO.firstName;
+        this.lastName = addressBookDTO.lastName;
+        this.address = addressBookDTO.address;
+        this.city = addressBookDTO.city;
+        this.zip = addressBookDTO.zip;
+        this.email = addressBookDTO.email;
+        this.contact = addressBookDTO.contact;
+    }
+
+    public AddressBook(String firstName, String lastName, String address, String city, long zip, String email, long contact) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.city = city;
+        this.zip = zip;
+        this.email = email;
+        this.contact = contact;
     }
 
     public int getId() {
@@ -109,8 +141,7 @@ public class AddressBook {
     @Override
     public String toString() {
         return "AddressBook{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
+                "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", address='" + address + '\'' +
                 ", city='" + city + '\'' +
@@ -120,3 +151,6 @@ public class AddressBook {
                 '}';
     }
 }
+
+
+

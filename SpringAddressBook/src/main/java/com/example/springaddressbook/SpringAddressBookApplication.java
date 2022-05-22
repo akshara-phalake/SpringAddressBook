@@ -8,6 +8,7 @@ public class SpringAddressBookApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringAddressBookApplication.class, args);
+        System.out.println("Address Book project");
     }
 
 }
